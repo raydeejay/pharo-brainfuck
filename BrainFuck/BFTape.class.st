@@ -8,6 +8,11 @@ Class {
 	#category : #BrainFuck
 }
 
+{ #category : #'as yet unclassified' }
+BFTape class >> identifier [
+	^ #tape
+]
+
 { #category : #'private - accessing' }
 BFTape >> at: anInteger [
 	^ self contents at: anInteger + 1

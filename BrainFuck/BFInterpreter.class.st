@@ -14,16 +14,26 @@ Class {
 	#name : #BFInterpreter,
 	#superclass : #Object,
 	#instVars : [
-		'tape',
 		'program',
 		'output',
 		'index',
 		'cycles',
 		'input',
-		'commandSet'
+		'commandSet',
+		'modules'
 	],
 	#category : #BrainFuck
 }
+
+{ #category : #commands }
+BFInterpreter >> addCommandSet: aCommandSetClass [ 
+	self commandSet: aCommandSetClass new
+]
+
+{ #category : #modules }
+BFInterpreter >> addModule: aModuleClass [
+	self modules at: aModuleClass identifier put: aModuleClass new
+]
 
 { #category : #interpreting }
 BFInterpreter >> commandSet [
@@ -93,7 +103,7 @@ BFInterpreter >> jumpIfNotZero [
 	| pairs |
 	
 	pairs := 1.
-	self tape atHead isZero ifTrue: [ ^ self ].
+	(self module: #tape) atHead isZero ifTrue: [ ^ self ].
 	self index: self index - 1.
 	[ pairs > 0 ]
 		whileTrue: [
@@ -109,7 +119,7 @@ BFInterpreter >> jumpIfZero [
 	| pairs |
 	
 	pairs := 1.
-	self tape atHead isZero ifFalse: [ ^ self ].
+	(self module: #tape) atHead isZero ifFalse: [ ^ self ].
 	self index: self index + 1.
 	[ pairs > 0 ]
 		whileTrue: [
@@ -117,6 +127,16 @@ BFInterpreter >> jumpIfZero [
 			(self program at: self index) = $] ifTrue: [ pairs := pairs - 1 ].
 			self index: self index + 1 ].
 	self index: self index - 1
+]
+
+{ #category : #modules }
+BFInterpreter >> module: aSymbol [
+	^ self modules at: aSymbol ifAbsent: [ self error: 'The VM lacks module ', aSymbol printString ]
+]
+
+{ #category : #modules }
+BFInterpreter >> modules [
+	^ modules ifNil: [ modules := Dictionary new ]
 ]
 
 { #category : #'input/output' }
@@ -137,15 +157,4 @@ BFInterpreter >> program: anObject [
 { #category : #accessing }
 BFInterpreter >> programCounter [
 	^ self index - 1
-]
-
-{ #category : #accessing }
-BFInterpreter >> tape [
-	^ tape
-]
-
-{ #category : #accessing }
-BFInterpreter >> tape: aBFTape [ 
-	tape := aBFTape.
-	tape rewind
 ]

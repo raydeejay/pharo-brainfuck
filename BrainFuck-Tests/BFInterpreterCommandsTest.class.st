@@ -10,17 +10,16 @@ Class {
 
 { #category : #running }
 BFInterpreterCommandsTest >> setUp [
-	"Hooks that subclasses may override to define the fixture of test."
-	bfInterpreter := BFInterpreter new.
-	bfTape := BFTape new.
+	super setUp.
+	bfInterpreter := BFInterpreter new
 ]
 
 { #category : #tests }
 BFInterpreterCommandsTest >> testCloseBracketClosesInnerLoop [
 	| result |
 	
-	bfInterpreter tape: bfTape; interpret: '++++[>++[>+<-]<-]>>'.
-	result := bfTape atHead.
+	bfInterpreter addModule: BFTape; interpret: '++++[>++[>+<-]<-]>>'.
+	result := (bfInterpreter module: #tape) atHead.
 	self assert: result equals: 8
 ]
 
@@ -28,8 +27,8 @@ BFInterpreterCommandsTest >> testCloseBracketClosesInnerLoop [
 BFInterpreterCommandsTest >> testCloseBracketClosesLoop [
 	| result |
 	
-	bfInterpreter tape: bfTape; interpret: '++++[>+<-]>'.
-	result := bfTape atHead.
+	bfInterpreter addModule: BFTape; interpret: '++++[>+<-]>'.
+	result := (bfInterpreter module: #tape) atHead.
 	self assert: result equals: 4
 ]
 
@@ -37,8 +36,8 @@ BFInterpreterCommandsTest >> testCloseBracketClosesLoop [
 BFInterpreterCommandsTest >> testCommaReadsInputAndReplacesTheValueAtHead [
 	| result |
 	
-	bfInterpreter tape: bfTape; input: '0'; interpret: ','.
-	result := bfTape atHead asCharacter.
+	bfInterpreter addModule: BFTape; input: '0'; interpret: ','.
+	result := (bfInterpreter module: #tape) atHead asCharacter.
 	self assert: result equals: $0
 ]
 
@@ -49,7 +48,7 @@ BFInterpreterCommandsTest >> testFullTest [
 	program := '+++++++++++++++[>++++>+++++++>+++++<<<-][>.SKIP.]>>>--.<+++++.<--.<,.'.
 	char := 'A'.
 	result := (bfInterpreter
-		tape: bfTape;
+		addModule: BFTape;
 		input: char;
 		interpret: program;
 		output) contents.
@@ -63,7 +62,7 @@ BFInterpreterCommandsTest >> testHelloWorldOutputsHelloWorld [
 	program := '
 		++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.'.
 	result := (bfInterpreter
-		tape: bfTape;
+		addModule: BFTape;
 		interpret: program;
 		output) contents.
 	self assert: result equals: 'Hello World!', Character lf asString
@@ -73,8 +72,8 @@ BFInterpreterCommandsTest >> testHelloWorldOutputsHelloWorld [
 BFInterpreterCommandsTest >> testLeftMovesTheHeadBackwards [
 	| result |
 	
-	bfInterpreter tape: bfTape; interpret: '>><'.
-	result := bfTape head.
+	bfInterpreter addModule: BFTape; interpret: '>><'.
+	result := (bfInterpreter module: #tape) head.
 	self assert: result equals: 1
 ]
 
@@ -82,8 +81,8 @@ BFInterpreterCommandsTest >> testLeftMovesTheHeadBackwards [
 BFInterpreterCommandsTest >> testMinusDecrementsTheCurrentCell [
 	| result |
 	
-	bfInterpreter tape: bfTape; interpret: '--'.
-	result := bfTape atHead.
+	bfInterpreter addModule: BFTape; interpret: '--'.
+	result := (bfInterpreter module: #tape) atHead.
 	self assert: result equals: 254
 ]
 
@@ -93,7 +92,7 @@ BFInterpreterCommandsTest >> testNoOutputCommandsProducesNoOutput [
 	
 	program := '+++++'.
 	result := (bfInterpreter
-		tape: bfTape;
+		addModule: BFTape;
 		interpret: program;
 		output) contents.
 	self assert: result equals: String empty
@@ -103,8 +102,8 @@ BFInterpreterCommandsTest >> testNoOutputCommandsProducesNoOutput [
 BFInterpreterCommandsTest >> testOpenBracketSkipsToTheMatchingCloseBracketIfZero [
 	| result |
 	
-	bfInterpreter tape: bfTape; interpret: '[[+++]++++]+'.
-	result := bfTape atHead.
+	bfInterpreter addModule: BFTape; interpret: '[[+++]++++]+'.
+	result := (bfInterpreter module: #tape) atHead.
 	self assert: result equals: 1
 ]
 
@@ -113,7 +112,7 @@ BFInterpreterCommandsTest >> testPeriodOutputsTheValueAtHead [
 	| result |
 	
 	result := (bfInterpreter
-		tape: bfTape;
+		addModule: BFTape;
 		interpret: (String new: 48 withAll: $+);
 		interpret: '.';
 		output) contents.
@@ -124,8 +123,8 @@ BFInterpreterCommandsTest >> testPeriodOutputsTheValueAtHead [
 BFInterpreterCommandsTest >> testPlusIncrementsTheCurrentCell [
 	| result |
 	
-	bfInterpreter tape: bfTape; interpret: '++'.
-	result := bfTape atHead.
+	bfInterpreter addModule: BFTape; interpret: '++'.
+	result := (bfInterpreter module: #tape) atHead.
 	self assert: result equals: 2
 ]
 
@@ -133,8 +132,8 @@ BFInterpreterCommandsTest >> testPlusIncrementsTheCurrentCell [
 BFInterpreterCommandsTest >> testRightAdvancesTheHead [
 	| result |
 	
-	bfInterpreter tape: bfTape; interpret: '>>'.
-	result := bfTape head.
+	bfInterpreter addModule: BFTape; interpret: '>>'.
+	result := (bfInterpreter module: #tape) head.
 	self assert: result equals: 2
 ]
 
@@ -142,12 +141,12 @@ BFInterpreterCommandsTest >> testRightAdvancesTheHead [
 BFInterpreterCommandsTest >> testUndefinedCharactersAreIgnored [
 	| result |
 	
-	bfInterpreter tape: bfTape; interpret: 'Loops four times increment twice by one
+	bfInterpreter addModule: BFTape; interpret: 'Loops four times increment twice by one
 	++++ [            increment the value at cell 0 by 4 and loop until 0
 		> ++ [         increment the value at cell 1 by 2 and loop until 0
 			> + < - ]   increment the value at cell 2 and decrement the value at cell 1
 		< - ]          decrement the value at cell 0
 	>>                move the head to cell 2'.
-	result := bfTape atHead.
+	result := (bfInterpreter module: #tape) atHead.
 	self assert: result equals: 8
 ]

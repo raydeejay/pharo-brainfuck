@@ -14,18 +14,7 @@ Class {
 { #category : #running }
 BFInterpreterTest >> setUp [
 	super setUp.
-	bfInterpreter := BFInterpreter new.
-	bfTape := BFTape new
-]
-
-{ #category : #tests }
-BFInterpreterTest >> testChangingTheTapeRewindsIt [
-	| result |
-	
-	bfTape moveHeadForwards.
-	bfInterpreter tape: bfTape.
-	result := bfTape head.
-	self assert: result equals: 0
+	bfInterpreter := BFInterpreter new
 ]
 
 { #category : #tests }
@@ -33,7 +22,7 @@ BFInterpreterTest >> testEmptyProgramDoesNothing [
 	| result |
 	
 	result := bfInterpreter
-		tape: bfTape;
+		addModule: BFTape;
 		cycles.
 	self assert: result equals: 0
 ]
@@ -43,7 +32,7 @@ BFInterpreterTest >> testOneInstructionConsumesOneCycle [
 	| result |
 	
 	result := bfInterpreter
-		tape: bfTape;
+		addModule: BFTape;
 		interpret: '+';
 		cycles.
 	self assert: result equals: 1
@@ -54,7 +43,7 @@ BFInterpreterTest >> testStopsAtTheEndOfTheProgram [
 	| result |
 	
 	result := bfInterpreter
-		tape: bfTape;
+		addModule: BFTape;
 		interpret: '+++';
 		programCounter.
 	self assert: result equals: 3
