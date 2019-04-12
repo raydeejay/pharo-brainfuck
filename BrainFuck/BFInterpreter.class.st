@@ -25,6 +25,44 @@ Class {
 	#category : #BrainFuck
 }
 
+{ #category : #'instance creation' }
+BFInterpreter class >> bfstack [
+	| vm |
+
+	vm := self new.
+	^ vm
+		addModule: BFStack;
+		mainStorage: (vm module: #stack);
+		commandSet: BFStandardCommandSet new;
+		yourself
+]
+
+{ #category : #'instance creation' }
+BFInterpreter class >> drawfuck [
+	| vm |
+
+	vm := self new.
+	vm
+		addModule: BFTape;
+		addModule: BFDisplay;
+		mainStorage: (vm module: #tape);
+		commandSet: BFStandardCommandSet new << BFDrawCommandSet new.
+	(vm module: #display) show.
+	^ vm
+]
+
+{ #category : #'instance creation' }
+BFInterpreter class >> standard [
+	| vm |
+
+	vm := self new.
+	^ vm
+		addModule: BFTape;
+		mainStorage: (vm module: #tape);
+		commandSet: BFStandardCommandSet new;
+		yourself
+]
+
 { #category : #commands }
 BFInterpreter >> addCommandSet: aCommandSetClass [ 
 	self commandSet: aCommandSetClass
