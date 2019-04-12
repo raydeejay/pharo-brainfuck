@@ -27,7 +27,7 @@ Class {
 
 { #category : #commands }
 BFInterpreter >> addCommandSet: aCommandSetClass [ 
-	self commandSet: aCommandSetClass new
+	self commandSet: aCommandSetClass
 ]
 
 { #category : #modules }
@@ -77,17 +77,7 @@ BFInterpreter >> input: aString [
 
 { #category : #interpreting }
 BFInterpreter >> interpret [
-	self index: 1.
-	[ self index <= self program size ]
-		whileTrue: [
-			| each |
-			
-			each := self program at: index.
-			self commandSet commands
-				at: each
-				ifPresent: [ :cmd | cmd value: self ].
-			index := index + 1.
-			self cycles: self cycles + 1 ]
+	[ self index <= self program size ] whileTrue: [ self interpretOne ]
 ]
 
 { #category : #interpreting }
@@ -97,13 +87,25 @@ BFInterpreter >> interpret: aString [
 	self interpret
 ]
 
+{ #category : #interpreting }
+BFInterpreter >> interpretOne [
+	| each |
+
+	each := self program at: index.
+	self commandSet commands
+		at: each
+		ifPresent: [ :cmd | cmd value: self ].
+	index := index + 1.
+	^ self cycles: self cycles + 1
+]
+
 { #category : #jumping }
 BFInterpreter >> jumpIfNotZero [
 	"skip backwards through the program until the matching closing bracket"
 	| pairs |
 	
 	pairs := 1.
-	(self module: #tape) atHead isZero ifTrue: [ ^ self ].
+	(self module: #mainStorage) atHead isZero ifTrue: [ ^ self ].
 	self index: self index - 1.
 	[ pairs > 0 ]
 		whileTrue: [
@@ -119,7 +121,7 @@ BFInterpreter >> jumpIfZero [
 	| pairs |
 	
 	pairs := 1.
-	(self module: #tape) atHead isZero ifFalse: [ ^ self ].
+	(self module: #mainStorage) atHead isZero ifFalse: [ ^ self ].
 	self index: self index + 1.
 	[ pairs > 0 ]
 		whileTrue: [
@@ -127,6 +129,11 @@ BFInterpreter >> jumpIfZero [
 			(self program at: self index) = $] ifTrue: [ pairs := pairs - 1 ].
 			self index: self index + 1 ].
 	self index: self index - 1
+]
+
+{ #category : #'as yet unclassified' }
+BFInterpreter >> mainStorage: aBFStorage [ 
+	self modules at: #mainStorage put: aBFStorage
 ]
 
 { #category : #modules }
@@ -151,7 +158,8 @@ BFInterpreter >> program [
 
 { #category : #accessing }
 BFInterpreter >> program: anObject [
-	program := anObject
+	program := anObject.
+	self index: 1
 ]
 
 { #category : #accessing }
