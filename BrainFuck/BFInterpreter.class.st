@@ -65,6 +65,13 @@ BFInterpreter >> addCommandSet: aCommandSetClass [
 	self commandSet: aCommandSetClass
 ]
 
+{ #category : #configuring }
+BFInterpreter >> addHead: aBFHead [
+	self heads
+		at: aBFHead name
+		put: aBFHead
+]
+
 { #category : #accessing }
 BFInterpreter >> commandSet [
 	^ commandSet ifNil: [ commandSet := BFStandardCommandSet new ]
@@ -83,6 +90,16 @@ BFInterpreter >> cycles [
 { #category : #'private - accessing' }
 BFInterpreter >> cycles: anObject [
 	cycles := anObject
+]
+
+{ #category : #accessing }
+BFInterpreter >> heads [
+	^ heads ifNil: [ heads := Dictionary new ]
+]
+
+{ #category : #'private - accessing' }
+BFInterpreter >> heads: anObject [
+	heads := anObject
 ]
 
 { #category : #interpreting }
