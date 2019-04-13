@@ -6,7 +6,9 @@ Class {
 	#superclass : #TestCase,
 	#instVars : [
 		'bfInterpreter',
-		'bfTape'
+		'bfTape',
+		'bfHead',
+		'bfVM'
 	],
 	#category : #'BrainFuck-Tests'
 }
@@ -14,42 +16,36 @@ Class {
 { #category : #running }
 BFInterpreterTest >> setUp [
 	super setUp.
+	bfHead := (BFHead on: BFTape new) name: #storage; yourself.
 	bfInterpreter := BFInterpreter new
+		addHead: bfHead;
+		addCommandSet: BFStandardCommandSet new;
+		yourself.
+	bfVM := BFMachine new addInterpreter: bfInterpreter
 ]
 
 { #category : #tests }
 BFInterpreterTest >> testEmptyProgramDoesNothing [
-	| result head |
+	| result |
 	
-	head := BFHead on: (BFTape new name: #storage; yourself).
-	result := bfInterpreter
-		addHead: head;
-		cycles.
+	result := bfInterpreter cycles.
 	self assert: result equals: 0
 ]
 
 { #category : #tests }
 BFInterpreterTest >> testOneInstructionConsumesOneCycle [
-	| result head |
+	| result |
 	
-	head := (BFHead on: BFTape new) name: #storage; yourself.
-	bfInterpreter addHead: head.
-	BFMachine new
-		addInterpreter: bfInterpreter;
-		interpret: '+'.
+	bfVM interpret: '+'.
 	result := bfInterpreter cycles.
 	self assert: result equals: 1
 ]
 
 { #category : #tests }
 BFInterpreterTest >> testStopsAtTheEndOfTheProgram [
-	| result head |
+	| result |
 	
-	head := (BFHead on: BFTape new) name: #storage; yourself.
-	bfInterpreter addHead: head.
-	BFMachine new
-		addInterpreter: bfInterpreter;
-		interpret: '+++'.
+	bfVM interpret: '+++'.
 	result := bfInterpreter index.
 	self assert: result equals: 4
 ]
