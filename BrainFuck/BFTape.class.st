@@ -25,12 +25,12 @@ BFTape >> at: anInteger put: aValue [
 
 { #category : #'write and read' }
 BFTape >> atHead [
-	^ self at: self head
+	^ self at: self head position
 ]
 
 { #category : #'write and read' }
 BFTape >> atHeadPut: anInteger [
-	self at: self head put: anInteger % 256
+	self at: self head position put: anInteger % 256
 ]
 
 { #category : #'private - accessing' }
@@ -42,26 +42,26 @@ BFTape >> contents [
 BFTape >> decrementAtHead [
 	| val |
 	
-	val := self at: self head.
-	self at: self head put: val - 1 % 256
+	val := self at: self head position.
+	self at: self head position put: val - 1 % 256
 ]
 
 { #category : #accessing }
 BFTape >> head [
-	^ head ifNil: [ head := 0 ]
+	^ head ifNil: [ head := BFHead on: self ]
 ]
 
 { #category : #accessing }
-BFTape >> head: anInteger [ 
-	head := anInteger
+BFTape >> head: aBFHead [ 
+	head := aBFHead
 ]
 
 { #category : #'write and read' }
 BFTape >> incrementAtHead [
 	| val |
 	
-	val := self at: self head.
-	self at: self head put: val + 1 % 256
+	val := self at: self head position.
+	self at: self head position put: val + 1 % 256
 ]
 
 { #category : #initialization }
@@ -77,11 +77,11 @@ BFTape >> moveHeadBackwards [
 
 { #category : #seeking }
 BFTape >> moveHeadBy: anInteger [
-	self head + anInteger < 0
+	self head position + anInteger < 0
 		ifTrue: [ self error: 'Head attempted to move past the beginning of the tape' ].
-	self head + anInteger >= self contents size
+	self head position + anInteger >= self contents size
 		ifTrue: [ self error: 'Head attempted to move past the end of the tape' ].
-	self head: self head + anInteger
+	self head position: self head position + anInteger
 ]
 
 { #category : #seeking }
@@ -95,10 +95,10 @@ BFTape >> moveHeadTo: anInteger [
 		ifTrue: [ self error: 'Head attempted to move past the beginning of the tape' ].
 	anInteger >= self contents size
 		ifTrue: [ self error: 'Head attempted to move past the end of the tape' ].
-	self head: self head + anInteger
+	self head position: self head position + anInteger
 ]
 
 { #category : #seeking }
 BFTape >> rewind [
-	self head: 0
+	self head position: 0
 ]
