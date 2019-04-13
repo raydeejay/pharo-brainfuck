@@ -104,11 +104,6 @@ BFInterpreter >> heads [
 	^ heads ifNil: [ heads := Dictionary new ]
 ]
 
-{ #category : #'private - accessing' }
-BFInterpreter >> heads: anObject [
-	heads := anObject
-]
-
 { #category : #accessing }
 BFInterpreter >> index [
 	^ index ifNil: [ index := 1 ]
@@ -145,9 +140,7 @@ BFInterpreter >> jumpIfNotZero [
 	self loopStack isEmpty ifTrue: [ self error: 'Empty loop stack' ].
 	(self head: #storage) read isZero
 		ifTrue: [ self loopStack pop ]
-		ifFalse: [ self index: self loopStack top ]
-	
-
+		ifFalse: [ self index: self loopStack top first ]
 ]
 
 { #category : #jumping }
@@ -155,13 +148,19 @@ BFInterpreter >> jumpIfZero [
 	"skip forward through the program until the matching closing bracket"
 	| depth |
 
-	self loopStack push: self index.
+	self loopStack push: {
+		self index.
+		self vm program at: self index - 1.
+		commandSet matchingCharFor: (self vm program at: self index - 1) }.
 	(self head: #storage) read isZero ifFalse: [ ^ self ].
 	
 	depth := 1.	
-	[ depth isZero ] whileFalse: [ 
-		(self vm program at: self index) = $[ ifTrue: [ depth := depth + 1 ].
-		(self vm program at: self index) = $] ifTrue: [ depth := depth - 1 ].
+	[ depth isZero ] whileFalse: [
+		| char |
+		
+		char := (self vm program at: self index).
+		char = (loopStack top second) ifTrue: [ depth := depth + 1 ].
+		char = (loopStack top third) ifTrue: [ depth := depth - 1 ].
 		self index: self index + 1 ]
 ]
 
