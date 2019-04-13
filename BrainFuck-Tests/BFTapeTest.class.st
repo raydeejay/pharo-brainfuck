@@ -16,42 +16,47 @@ BFTapeTest >> setUp [
 
 { #category : #tests }
 BFTapeTest >> testTapeAdvancesByOne [
-	| result |
+	| result head |
 	
-	result := bfTape moveHeadForwards head.
+	head := BFHead on: bfTape.	
+	result := head moveForwards position.
 	self assert: result equals: 1
 ]
 
 { #category : #tests }
 BFTapeTest >> testTapeCellsHoldIntegers [
-	| result |
+	| result head |
 	
-	result := bfTape incrementAtHead atHead.
+	head := BFHead on: bfTape.	
+	result := head increment read.
 	self assert: result equals: 1
 ]
 
 { #category : #tests }
 BFTapeTest >> testTapeCellsHoldUnsigned8BitIntegers [
-	| result |
+	| result head |
 	
-	result := bfTape decrementAtHead atHead.
+	head := BFHead on: bfTape.	
+	result := head decrement read.
 	self assert: result equals: 255
 ]
 
 { #category : #tests }
 BFTapeTest >> testTapeCellsHoldZeroByDefault [
-	| result |
+	| result head |
 	
-	result := bfTape atHead.
+	head := BFHead on: bfTape.
+	result := head read.
 	self assert: result equals: 0
 ]
 
 { #category : #tests }
 BFTapeTest >> testTapeDoesNotWrap [
-	| result |
+	| result head |
 	
+	head := BFHead on: bfTape.
 	self
-		should: [ result := bfTape moveHeadBackwards head ]
+		should: [ result := head moveBackwards position ]
 		raise: Error
 		whoseDescriptionIncludes: 'Head attempted to move past the beginning of the tape'
 		description: 'Should get the proper error'
@@ -59,10 +64,11 @@ BFTapeTest >> testTapeDoesNotWrap [
 
 { #category : #tests }
 BFTapeTest >> testTapeDoesNotWrapAtTheEnd [
-	| result |
+	| result head |
 	
+	head := BFHead on: bfTape.
 	self
-		should: [ result := bfTape moveHeadTo: (bfTape contents size) ]
+		should: [ result := head moveTo: (bfTape contents size) ]
 		raise: Error
 		whoseDescriptionIncludes: 'Head attempted to move past the end of the tape'
 		description: 'Should get the proper error'
@@ -70,10 +76,11 @@ BFTapeTest >> testTapeDoesNotWrapAtTheEnd [
 
 { #category : #tests }
 BFTapeTest >> testTapeDoesNotWrapAtTheEndTwo [
-	| result |
-	
+	| result 	head |
+		
+	head := BFHead on: bfTape.
 	self
-		should: [ result := bfTape moveHeadTo: bfTape contents size - 1; moveHeadForwards ]
+		should: [ result := head moveTo: bfTape contents size - 1; moveForwards ]
 		raise: Error
 		whoseDescriptionIncludes: 'Head attempted to move past the end of the tape'
 		description: 'Should get the proper error'
@@ -81,8 +88,9 @@ BFTapeTest >> testTapeDoesNotWrapAtTheEndTwo [
 
 { #category : #tests }
 BFTapeTest >> testTapeHeadCanBeAtTheEnd [
-	| result |
+	| result head |
 	
-	result := bfTape moveHeadTo: bfTape contents size - 1; atHead.
+	head := BFHead on: bfTape.
+	result := head moveTo: bfTape contents size - 1; read.
 	self assert: result equals: 0
 ]

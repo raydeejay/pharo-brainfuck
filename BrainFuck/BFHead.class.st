@@ -59,12 +59,30 @@ BFHead >> increment [
 
 { #category : #seeking }
 BFHead >> moveBackwards [
-	self position: self position - 1
+	self moveBy: -1
+]
+
+{ #category : #seeking }
+BFHead >> moveBy: anInteger [
+	self position + anInteger < 0
+		ifTrue: [ self error: 'Head attempted to move past the beginning of the tape' ].
+	self position + anInteger >= self storage contents size
+		ifTrue: [ self error: 'Head attempted to move past the end of the tape' ].
+	self position: self position + anInteger
 ]
 
 { #category : #seeking }
 BFHead >> moveForwards [
-	self position: self position + 1
+	self moveBy: 1
+]
+
+{ #category : #seeking }
+BFHead >> moveTo: anInteger [
+	anInteger < 0
+		ifTrue: [ self error: 'Head attempted to move past the beginning of the tape' ].
+	anInteger >= self storage contents size
+		ifTrue: [ self error: 'Head attempted to move past the end of the tape' ].
+	self position: self position + anInteger
 ]
 
 { #category : #accessing }

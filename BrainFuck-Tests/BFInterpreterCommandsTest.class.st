@@ -16,10 +16,11 @@ BFInterpreterCommandsTest >> setUp [
 
 { #category : #tests }
 BFInterpreterCommandsTest >> testCloseBracketClosesInnerLoop [
-	| result |
+	| result head |
 	
-	bfInterpreter addModule: BFTape; interpret: '++++[>++[>+<-]<-]>>'.
-	result := (bfInterpreter module: #tape) atHead.
+	head := (BFHead on: bfTape) name: #storage; yourself..
+	bfInterpreter addHead: head; interpret: '++++[>++[>+<-]<-]>>'.
+	result := (bfInterpreter head: #storage) read.
 	self assert: result equals: 8
 ]
 
