@@ -19,32 +19,37 @@ BFInterpreterTest >> setUp [
 
 { #category : #tests }
 BFInterpreterTest >> testEmptyProgramDoesNothing [
-	| result |
+	| result head |
 	
+	head := BFHead on: (BFTape new name: #storage; yourself).
 	result := bfInterpreter
-		addModule: BFTape;
+		addHead: head;
 		cycles.
 	self assert: result equals: 0
 ]
 
 { #category : #tests }
 BFInterpreterTest >> testOneInstructionConsumesOneCycle [
-	| result |
+	| result head |
 	
-	result := bfInterpreter
-		addModule: BFTape;
-		interpret: '+';
-		cycles.
+	head := (BFHead on: BFTape new) name: #storage; yourself.
+	bfInterpreter addHead: head.
+	BFMachine new
+		addInterpreter: bfInterpreter;
+		interpret: '+'.
+	result := bfInterpreter cycles.
 	self assert: result equals: 1
 ]
 
 { #category : #tests }
 BFInterpreterTest >> testStopsAtTheEndOfTheProgram [
-	| result |
+	| result head |
 	
-	result := bfInterpreter
-		addModule: BFTape;
-		interpret: '+++';
-		programCounter.
-	self assert: result equals: 3
+	head := (BFHead on: BFTape new) name: #storage; yourself.
+	bfInterpreter addHead: head.
+	BFMachine new
+		addInterpreter: bfInterpreter;
+		interpret: '+++'.
+	result := bfInterpreter index.
+	self assert: result equals: 4
 ]
