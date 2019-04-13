@@ -2,8 +2,7 @@ Class {
 	#name : #BFTape,
 	#superclass : #BFModule,
 	#instVars : [
-		'head',
-		'contents'
+		'head'
 	],
 	#category : #BrainFuck
 }

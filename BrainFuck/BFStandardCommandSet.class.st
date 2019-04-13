@@ -7,13 +7,13 @@ Class {
 { #category : #initialization }
 BFStandardCommandSet >> initialize [
 	commands := { 
-		$> -> [ :interp | (interp vm module: #mainStorage) moveHeadForwards ].
-		$< -> [ :interp | (interp vm module: #mainStorage) moveHeadBackwards ].
-		$+ -> [ :interp | (interp vm module: #mainStorage) incrementAtHead ].
-		$- -> [ :interp | (interp vm module: #mainStorage) decrementAtHead ].
-		$. -> [ :interp | interp vm output << (interp vm module: #mainStorage) atHead asCharacter ].
-		$, -> [ :interp | (interp vm module: #mainStorage) atHeadPut: interp vm input next charCode ].
-		$[ -> [ :interp | interp vm jumpIfZero ].
-		$] -> [ :interp | interp vm jumpIfNotZero ]
+		$> -> [ :interp | (interp head: #storage) moveForwards ].
+		$< -> [ :interp | (interp head: #storage) moveBackwards ].
+		$+ -> [ :interp | (interp head: #storage) increment ].
+		$- -> [ :interp | (interp head: #storage) decrement ].
+		$. -> [ :interp | interp vm output << (interp head: #storage) read asCharacter ].
+		$, -> [ :interp | (interp head: #storage) write: interp vm input next charCode ].
+		$[ -> [ :interp | interp jumpIfZero ].
+		$] -> [ :interp | interp jumpIfNotZero ]
 		} asDictionary
 ]

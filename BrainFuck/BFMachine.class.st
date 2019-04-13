@@ -35,9 +35,6 @@ Class {
 		'input',
 		'output',
 		'program',
-		'index',
-		'loopStack',
-		'interpreter',
 		'cycles',
 		'interpreters'
 	],
@@ -69,16 +66,6 @@ BFMachine >> cycles: anObject [
 	cycles := anObject
 ]
 
-{ #category : #accessing }
-BFMachine >> index [
-	^ index ifNil: [ index := 1 ]
-]
-
-{ #category : #'private - accessing' }
-BFMachine >> index: anInteger [
-	index := anInteger
-]
-
 { #category : #'input/output' }
 BFMachine >> input [
 	^ input
@@ -92,49 +79,14 @@ BFMachine >> input: aString [
 { #category : #interpreting }
 BFMachine >> interpret: aString [
 	self program: aString.
-	self index: 1.
-	[ self index <= self program size ]
-		whileTrue: [
-			self index: self index + 1.
-			self interpreters
-				do: [ :each | each interpretOne ] ]
+	[ self interpreters allSatisfy: #isHalted ]
+		whileFalse: [ self interpreters
+			do: [ :each | each interpretOne ] ]
 ]
 
 { #category : #accessing }
 BFMachine >> interpreters [
 	^ interpreters ifNil: [ interpreters := OrderedCollection new ]
-]
-
-{ #category : #jumping }
-BFMachine >> jumpIfNotZero [
-	"skip backwards through the program until the matching closing bracket"
-
-	self loopStack isEmpty ifTrue: [ self error: 'Empty loop stack' ].
-	(self module: #mainStorage) atHead isZero
-		ifTrue: [ self loopStack pop ]
-		ifFalse: [ self index: self loopStack top ]
-	
-
-]
-
-{ #category : #jumping }
-BFMachine >> jumpIfZero [
-	"skip forward through the program until the matching closing bracket"
-
-	(self module: #mainStorage) atHead isZero
-		ifFalse: [ self loopStack push: self index ]
-		ifTrue: [ [ (self program at: self index) = $] ]
-			whileFalse: [ self index: self index + 1 ] ]
-]
-
-{ #category : #accessing }
-BFMachine >> loopStack [
-	^ loopStack ifNil: [ loopStack := Stack new ]
-]
-
-{ #category : #modules }
-BFMachine >> mainStorage: aBFStorage [ 
-	self modules at: #mainStorage put: aBFStorage
 ]
 
 { #category : #modules }
@@ -159,11 +111,5 @@ BFMachine >> program [
 
 { #category : #accessing }
 BFMachine >> program: anObject [
-	program := anObject.
-	self index: 1
-]
-
-{ #category : #accessing }
-BFMachine >> programCounter [
-	^ self index - 1
+	program := anObject
 ]

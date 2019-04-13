@@ -3,7 +3,6 @@ Class {
 	#superclass : #BFModule,
 	#instVars : [
 		'head',
-		'contents',
 		'headR',
 		'headG',
 		'headB'

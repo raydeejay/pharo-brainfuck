@@ -17,7 +17,9 @@ Class {
 		'cycles',
 		'commandSet',
 		'vm',
-		'heads'
+		'heads',
+		'index',
+		'loopStack'
 	],
 	#category : #BrainFuck
 }
@@ -92,6 +94,11 @@ BFInterpreter >> cycles: anObject [
 	cycles := anObject
 ]
 
+{ #category : #'as yet unclassified' }
+BFInterpreter >> head: aSymbol [
+	^ self heads at: aSymbol
+]
+
 { #category : #accessing }
 BFInterpreter >> heads [
 	^ heads ifNil: [ heads := Dictionary new ]
@@ -102,15 +109,60 @@ BFInterpreter >> heads: anObject [
 	heads := anObject
 ]
 
+{ #category : #accessing }
+BFInterpreter >> index [
+	^ index ifNil: [ index := 1 ]
+]
+
+{ #category : #'private - accessing' }
+BFInterpreter >> index: anInteger [
+	index := anInteger
+]
+
 { #category : #interpreting }
 BFInterpreter >> interpretOne [
 	| each |
 
-	each := self vm program at: self vm index - 1. "take preincrement into account"
+	self isHalted ifTrue: [ ^ self ].
+	
+	self index: self index + 1.
+	each := self vm program at: self index - 1.	 "take preincrement into account"
 	self commandSet commands
 		at: each
 		ifPresent: [ :cmd | cmd value: self ].
 	self cycles: self cycles + 1
+]
+
+{ #category : #testing }
+BFInterpreter >> isHalted [
+	^ self index > self vm program size
+]
+
+{ #category : #jumping }
+BFInterpreter >> jumpIfNotZero [
+	"skip backwards through the program until the matching closing bracket"
+
+	self loopStack isEmpty ifTrue: [ self error: 'Empty loop stack' ].
+	(self head: #storage) read isZero
+		ifTrue: [ self loopStack pop ]
+		ifFalse: [ self index: self loopStack top ]
+	
+
+]
+
+{ #category : #jumping }
+BFInterpreter >> jumpIfZero [
+	"skip forward through the program until the matching closing bracket"
+
+	(self head: #storage) read isZero
+		ifFalse: [ self loopStack push: self index ]
+		ifTrue: [ [ (self vm program at: self index) = $] ]
+			whileFalse: [ self index: self index + 1 ] ]
+]
+
+{ #category : #accessing }
+BFInterpreter >> loopStack [
+	^ loopStack ifNil: [ loopStack := Stack new ]
 ]
 
 { #category : #accessing }

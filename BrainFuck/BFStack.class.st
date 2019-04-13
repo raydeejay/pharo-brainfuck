@@ -1,10 +1,6 @@
 Class {
 	#name : #BFStack,
 	#superclass : #BFModule,
-	#instVars : [
-		'head',
-		'contents'
-	],
 	#category : #BrainFuck
 }
 

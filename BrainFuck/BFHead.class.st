@@ -41,6 +41,32 @@ BFHead class >> on: aStorage [
 		yourself
 ]
 
+{ #category : #'write and read' }
+BFHead >> decrement [
+	| val |
+	
+	val := self storage at: self position.
+	self storage at: self position put: val - 1
+]
+
+{ #category : #'as yet unclassified' }
+BFHead >> increment [
+	| val |
+
+	val := self storage at: self position.
+	self storage at: self position put: val + 1
+]
+
+{ #category : #seeking }
+BFHead >> moveBackwards [
+	self position: self position - 1
+]
+
+{ #category : #seeking }
+BFHead >> moveForwards [
+	self position: self position + 1
+]
+
 { #category : #accessing }
 BFHead >> name [
 	^ name
@@ -59,6 +85,11 @@ BFHead >> position [
 { #category : #accessing }
 BFHead >> position: anObject [
 	position := anObject
+]
+
+{ #category : #'as yet unclassified' }
+BFHead >> read [
+	^ self storage at: self position
 ]
 
 { #category : #accessing }

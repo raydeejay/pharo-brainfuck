@@ -13,3 +13,8 @@ BFSubstitution >> commandSet [
 	cmdset commands removeAll addAll: newDict.
 	^ cmdset
 ]
+
+{ #category : #translating }
+BFSubstitution >> translateCommandSet: aDictionary [
+	self subclassResponsibility
+]

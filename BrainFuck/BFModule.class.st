@@ -2,7 +2,8 @@ Class {
 	#name : #BFModule,
 	#superclass : #Object,
 	#instVars : [
-		'name'
+		'name',
+		'contents'
 	],
 	#category : #BrainFuck
 }
