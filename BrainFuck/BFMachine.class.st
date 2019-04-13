@@ -41,6 +41,42 @@ Class {
 	#category : #BrainFuck
 }
 
+{ #category : #'instance creation' }
+BFMachine class >> bfstack [
+	| interp |
+
+	interp := BFInterpreter new
+		addHead: ((BFHead on: BFStack new) name: #storage; yourself);
+		addCommandSet: BFStandardCommandSet new;
+		yourself.
+	^ self new addInterpreter: interp; yourself
+
+]
+
+{ #category : #'instance creation' }
+BFMachine class >> drawfuck [
+	| interp |
+
+	interp := BFInterpreter new
+		addHead: ((BFHead on: BFTape new) name: #storage; yourself);
+		addCommandSet: BFStandardCommandSet new;
+		yourself.
+	^ self new addInterpreter: interp; yourself
+
+]
+
+{ #category : #'instance creation' }
+BFMachine class >> standard [
+	| interp |
+
+	interp := BFInterpreter new
+		addHead: ((BFHead on: BFTape new) name: #storage; yourself);
+		addCommandSet: BFStandardCommandSet new;
+		yourself.
+	^ self new addInterpreter: interp; yourself
+
+]
+
 { #category : #modules }
 BFMachine >> addInterpreter: aBFInterpreter [ 
 	self interpreters add: (aBFInterpreter vm: self; yourself)
