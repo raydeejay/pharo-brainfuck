@@ -2,7 +2,8 @@ Class {
 	#name : #BFCommandSet,
 	#superclass : #Object,
 	#instVars : [
-		'commands'
+		'commands',
+		'pairs'
 	],
 	#category : #BrainFuck
 }
@@ -20,4 +21,14 @@ BFCommandSet >> << aCommandSet [
 { #category : #accessing }
 BFCommandSet >> commands [
 	^ commands
+]
+
+{ #category : #accessing }
+BFCommandSet >> matchingCharFor: aCharacter [
+	^ pairs at: aCharacter 
+]
+
+{ #category : #accessing }
+BFCommandSet >> pairs [
+	^ pairs
 ]

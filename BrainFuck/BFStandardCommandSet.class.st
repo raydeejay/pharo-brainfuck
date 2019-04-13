@@ -15,5 +15,6 @@ BFStandardCommandSet >> initialize [
 		$, -> [ :interp | (interp head: #storage) write: interp vm input next charCode ].
 		$[ -> [ :interp | interp jumpIfZero ].
 		$] -> [ :interp | interp jumpIfNotZero ]
-		} asDictionary
+		} asDictionary.
+	pairs := { $[ -> $]. $] -> $[ } asDictionary 
 ]
