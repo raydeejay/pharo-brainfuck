@@ -69,8 +69,8 @@ BFMachine >> index [
 ]
 
 { #category : #'private - accessing' }
-BFMachine >> index: anObject [
-	index := anObject
+BFMachine >> index: anInteger [
+	index := anInteger
 ]
 
 { #category : #'input/output' }
@@ -93,33 +93,28 @@ BFMachine >> interpret: aString [
 { #category : #jumping }
 BFMachine >> jumpIfNotZero [
 	"skip backwards through the program until the matching closing bracket"
-	| pairs |
+
+	self loopStack isEmpty ifTrue: [ self error: 'Empty loop stack' ].
+	(self module: #mainStorage) atHead isZero
+		ifTrue: [ self loopStack pop ]
+		ifFalse: [ self index: self loopStack top ]
 	
-	pairs := 1.
-	(self module: #mainStorage) atHead isZero ifTrue: [ ^ self ].
-	self index: self index - 1.
-	[ pairs > 0 ]
-		whileTrue: [
-			(self program at: self index) = $] ifTrue: [ pairs := pairs + 1 ].
-			(self program at: self index) = $[ ifTrue: [ pairs := pairs - 1 ].
-			self index: self index - 1 ].
-	self index: self index + 1
+
 ]
 
 { #category : #jumping }
 BFMachine >> jumpIfZero [
 	"skip forward through the program until the matching closing bracket"
-	| pairs |
-	
-	pairs := 1.
-	(self module: #mainStorage) atHead isZero ifFalse: [ ^ self ].
-	self index: self index + 1.
-	[ pairs > 0 ]
-		whileTrue: [
-			(self program at: self index) = $[ ifTrue: [ pairs := pairs + 1 ].
-			(self program at: self index) = $] ifTrue: [ pairs := pairs - 1 ].
-			self index: self index + 1 ].
-	self index: self index - 1
+
+	(self module: #mainStorage) atHead isZero
+		ifFalse: [ self loopStack push: self index ]
+		ifTrue: [ [ (self program at: self index) = $] ]
+			whileFalse: [ self index: self index + 1 ] ]
+]
+
+{ #category : #accessing }
+BFMachine >> loopStack [
+	^ loopStack ifNil: [ loopStack := Stack new ]
 ]
 
 { #category : #modules }
