@@ -16,7 +16,8 @@ Class {
 	#instVars : [
 		'cycles',
 		'commandSet',
-		'vm'
+		'vm',
+		'heads'
 	],
 	#category : #BrainFuck
 }
@@ -59,17 +60,17 @@ BFInterpreter class >> standard [
 		yourself
 ]
 
-{ #category : #commands }
+{ #category : #configuring }
 BFInterpreter >> addCommandSet: aCommandSetClass [ 
 	self commandSet: aCommandSetClass
 ]
 
-{ #category : #interpreting }
+{ #category : #accessing }
 BFInterpreter >> commandSet [
 	^ commandSet ifNil: [ commandSet := BFStandardCommandSet new ]
 ]
 
-{ #category : #interpreting }
+{ #category : #'private - accessing' }
 BFInterpreter >> commandSet: anObject [
 	commandSet := anObject
 ]
@@ -106,7 +107,7 @@ BFInterpreter >> vm [
 	^ vm
 ]
 
-{ #category : #accessing }
+{ #category : #'private - accessing' }
 BFInterpreter >> vm: aBFMachine [
 	vm := aBFMachine
 ]
