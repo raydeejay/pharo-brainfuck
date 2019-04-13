@@ -94,11 +94,11 @@ BFInterpreter >> interpretOne [
 	| each |
 
 	each := self vm program at: self vm index.
+	self vm index: self vm index + 1.
 	self commandSet commands
 		at: each
 		ifPresent: [ :cmd | cmd value: self vm ].
-	self vm index: self vm index + 1.
-	^ self cycles: self cycles + 1
+	self cycles: self cycles + 1
 ]
 
 { #category : #accessing }
