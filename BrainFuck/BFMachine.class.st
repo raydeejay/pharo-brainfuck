@@ -79,6 +79,7 @@ BFMachine >> input: aString [
 { #category : #interpreting }
 BFMachine >> interpret: aString [
 	self program: aString.
+	self interpreters do: [ :each | each index: 1 ].
 	[ self interpreters allSatisfy: #isHalted ]
 		whileFalse: [ self interpreters
 			do: [ :each | each interpretOne ] ]

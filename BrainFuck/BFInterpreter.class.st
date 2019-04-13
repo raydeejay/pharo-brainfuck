@@ -153,11 +153,16 @@ BFInterpreter >> jumpIfNotZero [
 { #category : #jumping }
 BFInterpreter >> jumpIfZero [
 	"skip forward through the program until the matching closing bracket"
+	| depth |
 
-	(self head: #storage) read isZero
-		ifFalse: [ self loopStack push: self index ]
-		ifTrue: [ [ (self vm program at: self index) = $] ]
-			whileFalse: [ self index: self index + 1 ] ]
+	self loopStack push: self index.
+	(self head: #storage) read isZero ifFalse: [ ^ self ].
+	
+	depth := 1.	
+	[ depth isZero ] whileFalse: [ 
+		(self vm program at: self index) = $[ ifTrue: [ depth := depth + 1 ].
+		(self vm program at: self index) = $] ifTrue: [ depth := depth - 1 ].
+		self index: self index + 1 ]
 ]
 
 { #category : #accessing }

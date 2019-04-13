@@ -22,11 +22,6 @@ BFTape >> at: anInteger put: aValue [
 	^ self contents at: anInteger + 1 put: aValue % 256
 ]
 
-{ #category : #'write and read' }
-BFTape >> atHeadPut: anInteger [
-	self at: self head position put: anInteger % 256
-]
-
 { #category : #'private - accessing' }
 BFTape >> contents [
 	^ contents

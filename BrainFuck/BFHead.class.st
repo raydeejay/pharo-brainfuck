@@ -119,3 +119,8 @@ BFHead >> storage [
 BFHead >> storage: aStorage [
 	storage := aStorage
 ]
+
+{ #category : #'as yet unclassified' }
+BFHead >> write: anInteger [
+	^ self storage at: self position put: anInteger
+]
