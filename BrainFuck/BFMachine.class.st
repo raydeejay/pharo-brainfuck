@@ -36,6 +36,7 @@ Class {
 		'output',
 		'program',
 		'index',
+		'loopStack',
 		'interpreter',
 		'cycles'
 	],
@@ -85,6 +86,7 @@ BFMachine >> input: aString [
 { #category : #interpreting }
 BFMachine >> interpret: aString [
 	self program: aString.
+	self index: 1.
 	interpreter interpret
 ]
 
