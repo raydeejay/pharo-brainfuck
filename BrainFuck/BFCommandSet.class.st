@@ -7,6 +7,11 @@ Class {
 	#category : #BrainFuck
 }
 
+{ #category : #accessing }
+BFCommandSet class >> canonicalOrder [
+	^ '><+-.,[]'
+]
+
 { #category : #streaming }
 BFCommandSet >> << aCommandSet [
 	commands addAll: aCommandSet commands
