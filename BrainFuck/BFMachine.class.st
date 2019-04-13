@@ -49,8 +49,13 @@ BFMachine >> addInterpreter: aBFInterpreter [
 ]
 
 { #category : #modules }
-BFMachine >> addModule: aModuleClass [
-	self modules at: aModuleClass identifier put: aModuleClass new
+BFMachine >> addModule: aModule [
+	self addModule: aModule withName: aModule name
+]
+
+{ #category : #modules }
+BFMachine >> addModule: aModule withName: aSymbol [
+	self modules at: aSymbol put: aModule
 ]
 
 { #category : #accessing }

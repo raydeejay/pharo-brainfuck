@@ -1,6 +1,6 @@
 Class {
 	#name : #BFDisplay,
-	#superclass : #Object,
+	#superclass : #BFModule,
 	#instVars : [
 		'head',
 		'contents',

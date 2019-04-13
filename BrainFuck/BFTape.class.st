@@ -1,6 +1,6 @@
 Class {
 	#name : #BFTape,
-	#superclass : #Object,
+	#superclass : #BFModule,
 	#instVars : [
 		'head',
 		'contents'

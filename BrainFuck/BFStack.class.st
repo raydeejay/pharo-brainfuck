@@ -1,6 +1,6 @@
 Class {
 	#name : #BFStack,
-	#superclass : #Object,
+	#superclass : #BFModule,
 	#instVars : [
 		'head',
 		'contents'
