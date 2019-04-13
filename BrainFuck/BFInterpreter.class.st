@@ -86,16 +86,10 @@ BFInterpreter >> cycles: anObject [
 ]
 
 { #category : #interpreting }
-BFInterpreter >> interpret [
-	[ self vm index <= self vm program size ] whileTrue: [ self interpretOne ]
-]
-
-{ #category : #interpreting }
 BFInterpreter >> interpretOne [
 	| each |
 
-	each := self vm program at: self vm index.
-	self vm index: self vm index + 1.
+	each := self vm program at: self vm index - 1. "take preincrement into account"
 	self commandSet commands
 		at: each
 		ifPresent: [ :cmd | cmd value: self vm ].

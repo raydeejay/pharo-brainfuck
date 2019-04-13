@@ -38,14 +38,15 @@ Class {
 		'index',
 		'loopStack',
 		'interpreter',
-		'cycles'
+		'cycles',
+		'interpreters'
 	],
 	#category : #BrainFuck
 }
 
 { #category : #modules }
 BFMachine >> addInterpreter: aBFInterpreter [ 
-	interpreter := aBFInterpreter vm: self; yourself
+	self interpreters add: (aBFInterpreter vm: self; yourself)
 ]
 
 { #category : #modules }
@@ -92,7 +93,16 @@ BFMachine >> input: aString [
 BFMachine >> interpret: aString [
 	self program: aString.
 	self index: 1.
-	interpreter interpret
+	[ self index <= self program size ]
+		whileTrue: [
+			self index: self index + 1.
+			self interpreters
+				do: [ :each | each interpretOne ] ]
+]
+
+{ #category : #accessing }
+BFMachine >> interpreters [
+	^ interpreters ifNil: [ interpreters := OrderedCollection new ]
 ]
 
 { #category : #jumping }
