@@ -13,7 +13,7 @@ Class {
 BFTapeTest >> setUp [
 	super setUp.
 	bfTape := BFTape new.
-	bfHead := (BFHead on: bfTape) name: #storage; yourself.
+	bfHead := bfTape newHead: #storage.
 ]
 
 { #category : #tests }

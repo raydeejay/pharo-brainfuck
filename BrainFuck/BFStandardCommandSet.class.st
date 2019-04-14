@@ -11,8 +11,8 @@ BFStandardCommandSet >> initialize [
 		$< -> [ :interp | (interp head: #storage) moveBackwards ].
 		$+ -> [ :interp | (interp head: #storage) increment ].
 		$- -> [ :interp | (interp head: #storage) decrement ].
-		$. -> [ :interp | interp vm output << (interp head: #storage) read asCharacter ].
-		$, -> [ :interp | (interp head: #storage) write: interp vm input next charCode ].
+		$. -> [ :interp | (interp head: #output) write: (interp head: #storage) read ].
+		$, -> [ :interp | (interp head: #storage) write: (interp head: #input) read ].
 		$[ -> [ :interp | interp jumpIfZero ].
 		$] -> [ :interp | interp jumpIfNotZero ]
 		} asDictionary.

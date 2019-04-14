@@ -32,8 +32,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'modules',
-		'input',
-		'output',
 		'program',
 		'cycles',
 		'interpreters'
@@ -43,10 +41,11 @@ Class {
 
 { #category : #'instance creation' }
 BFMachine class >> bfstack [
-	| interp |
+	| interp stack |
 
+	stack := BFStack new.
 	interp := BFInterpreter new
-		addHead: ((BFHead on: BFStack new) name: #storage; yourself);
+		addHead: (stack newHead: #storage);
 		addCommandSet: BFStandardCommandSet new;
 		yourself.
 	^ self new addInterpreter: interp; yourself
@@ -58,7 +57,7 @@ BFMachine class >> drawfuck [
 	| interp |
 
 	interp := BFInterpreter new
-		addHead: ((BFHead on: BFTape new) name: #storage; yourself);
+		addHead: ((BFAbstractHead on: BFTape new) name: #storage; yourself);
 		addCommandSet: BFStandardCommandSet new;
 		yourself.
 	^ self new addInterpreter: interp; yourself
@@ -67,10 +66,11 @@ BFMachine class >> drawfuck [
 
 { #category : #'instance creation' }
 BFMachine class >> standard [
-	| interp |
+	| tape interp |
 
+	tape := BFTape new.
 	interp := BFInterpreter new
-		addHead: ((BFHead on: BFTape new) name: #storage; yourself);
+		addHead: (tape newHead: #storage);
 		addCommandSet: BFStandardCommandSet new;
 		yourself.
 	^ self new addInterpreter: interp; yourself
@@ -102,16 +102,6 @@ BFMachine >> cycles: anObject [
 	cycles := anObject
 ]
 
-{ #category : #'input/output' }
-BFMachine >> input [
-	^ input
-]
-
-{ #category : #'input/output' }
-BFMachine >> input: aString [ 
-	input := aString readStream 
-]
-
 { #category : #interpreting }
 BFMachine >> interpret: aString [
 	self program: aString.
@@ -134,11 +124,6 @@ BFMachine >> module: aSymbol [
 { #category : #modules }
 BFMachine >> modules [
 	^ modules ifNil: [ modules := Dictionary new ]
-]
-
-{ #category : #'input/output' }
-BFMachine >> output [
-	^ output ifNil: [ output := String new writeStream ]
 ]
 
 { #category : #accessing }

@@ -1,11 +1,13 @@
 Class {
 	#name : #BFTape,
-	#superclass : #BFModule,
-	#instVars : [
-		'head'
-	],
+	#superclass : #BFAbstractMedium,
 	#category : #BrainFuck
 }
+
+{ #category : #'as yet unclassified' }
+BFTape class >> headClass [
+	^ BFLinearHead
+]
 
 { #category : #'as yet unclassified' }
 BFTape class >> identifier [
@@ -20,11 +22,6 @@ BFTape >> at: anInteger [
 { #category : #'private - accessing' }
 BFTape >> at: anInteger put: aValue [
 	^ self contents at: anInteger + 1 put: aValue % 256
-]
-
-{ #category : #'private - accessing' }
-BFTape >> contents [
-	^ contents
 ]
 
 { #category : #initialization }

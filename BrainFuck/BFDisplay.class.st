@@ -1,6 +1,6 @@
 Class {
 	#name : #BFDisplay,
-	#superclass : #BFModule,
+	#superclass : #BFAbstractMedium,
 	#instVars : [
 		'head',
 		'headR',
@@ -9,6 +9,11 @@ Class {
 	],
 	#category : #BrainFuck
 }
+
+{ #category : #'as yet unclassified' }
+BFDisplay class >> headClass [
+	^ BF2DHead
+]
 
 { #category : #'as yet unclassified' }
 BFDisplay class >> identifier [
@@ -33,11 +38,6 @@ BFDisplay >> atHead [
 { #category : #'write and read' }
 BFDisplay >> atHeadPut: anInteger [
 	self contents push: anInteger % 256
-]
-
-{ #category : #'private - accessing' }
-BFDisplay >> contents [
-	^ contents
 ]
 
 { #category : #accessing }

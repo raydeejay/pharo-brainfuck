@@ -14,8 +14,12 @@ Class {
 BFInterpreterCommandsTest >> setUp [
 	super setUp.
 	bfTape := BFTape new.
-	bfHead := (BFHead on: bfTape) name: #storage; yourself.
-	bfInterpreter := BFInterpreter new addHead: bfHead; yourself.
+	bfHead := bfTape newHead: #storage.
+	bfInterpreter := BFInterpreter new
+		addHead: bfHead;
+		addHead: (BFTextualInput new newHead: #input);
+		addHead: (BFTextualOutput new newHead: #output);
+		yourself.
 	bfVM := BFMachine new addInterpreter: bfInterpreter; yourself.
 ]
 
@@ -41,22 +45,21 @@ BFInterpreterCommandsTest >> testCloseBracketClosesLoop [
 BFInterpreterCommandsTest >> testCommaReadsInputAndReplacesTheValueAtHead [
 	| result |
 	
-	bfVM input: '0'; interpret: ','.
+	(bfInterpreter head: #input) storage contents: '0'.
+	bfVM interpret: ','.
 	result := bfHead read asCharacter.
 	self assert: result equals: $0
 ]
 
 { #category : #tests }
 BFInterpreterCommandsTest >> testFullTest [
-	| result program char |
+	| result program |
 	
 	program := '+++++++++++++++[>++++>+++++++>+++++<<<-][>.SKIP.]>>>--.<+++++.<--.<,.'.
-	char := 'A'.
-	result := (bfVM
-		input: char;
-		interpret: program;
-		output) contents.
-	self assert: result equals: 'In:', char
+	(bfInterpreter head: #input) storage contents: 'A'.
+	bfVM interpret: program.
+	result := (bfInterpreter head: #output) storage render.
+	self assert: result equals: 'In:', 'A'
 ]
 
 { #category : #tests }
@@ -65,9 +68,8 @@ BFInterpreterCommandsTest >> testHelloWorldOutputsHelloWorld [
 	
 	program := '
 		++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.'.
-	result := (bfVM
-		interpret: program;
-		output) contents.
+	bfVM interpret: program.
+	result := (bfInterpreter head: #output) storage render.
 	self assert: result equals: 'Hello World!', Character lf asString
 ]
 
@@ -94,9 +96,8 @@ BFInterpreterCommandsTest >> testNoOutputCommandsProducesNoOutput [
 	| result program |
 	
 	program := '+++++'.
-	result := (bfVM
-		interpret: program;
-		output) contents.
+	bfVM interpret: program.
+	result := (bfInterpreter head: #output) storage render.
 	self assert: result equals: String empty
 ]
 
@@ -113,10 +114,10 @@ BFInterpreterCommandsTest >> testOpenBracketSkipsToTheMatchingCloseBracketIfZero
 BFInterpreterCommandsTest >> testPeriodOutputsTheValueAtHead [
 	| result |
 	
-	result := (bfVM
+	bfVM
 		interpret: (String new: 48 withAll: $+);
-		interpret: '.';
-		output) contents.
+		interpret: '.'.
+	result := (bfInterpreter head: #output) storage render.
 	self assert: result equals: '0'
 ]
 

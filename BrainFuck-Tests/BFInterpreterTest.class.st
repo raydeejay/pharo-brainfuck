@@ -16,7 +16,8 @@ Class {
 { #category : #running }
 BFInterpreterTest >> setUp [
 	super setUp.
-	bfHead := (BFHead on: BFTape new) name: #storage; yourself.
+	bfTape := BFTape new.
+	bfHead := bfTape newHead: #storage.
 	bfInterpreter := BFInterpreter new
 		addHead: bfHead;
 		addCommandSet: BFStandardCommandSet new;
